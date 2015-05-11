@@ -1,7 +1,21 @@
 <script type="application/javascript">
 
 
-        //保存服务器列表
+    //新增编辑框
+    function addNew() {
+        var tr = document.createElement('tr');
+        var td = document.createElement('td');
+        var input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('class', 'form-control');
+        input.setAttribute('name', 'server');
+
+        td.appendChild(input);
+        tr.appendChild(td);
+        $('#tbody')[0].appendChild(tr);
+    }
+
+    //保存服务器列表
     function save() {
 
         var data = {
@@ -12,7 +26,7 @@
                 return {
                     id: server.id,
                     ip: server.value,
-                    monitorStatus: server.checked ? 'Y' : 'N',
+                    monitorStatus: 'Y',
                     status: '1'
                 };
             })
@@ -23,7 +37,7 @@
             type: 'post',
             async: 'false',
             //传过去的value是一个序列化的文本
-            data: {data : JSON.stringify(data)}
+            data: {data: JSON.stringify(data)}
         });
     }
 
@@ -66,6 +80,6 @@
     </table>
 </div>
 <div class="modal-footer">
-    <!--TODO 全选和全不选,做到一个按钮里去-->
+    <button type="button" class="btn btn-primary" onclick="addNew()">新增</button>
     <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="save()">确定</button>
 </div>
