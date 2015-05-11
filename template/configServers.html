@@ -1,0 +1,45 @@
+<script type="application/javascript">
+
+    //页面加载显示现有的服务器选项
+    $(document).ready(function () {
+        var servers = $.ajax({
+            url: 'servers',
+            type: 'get',
+            async: 'false',
+            success: function (data) {
+                for (var i in data.servers) {
+                    var server = data.servers[i];
+
+                    var tr = document.createElement('tr');
+                    var td = document.createElement('td');
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.setAttribute('class', 'form-control');
+                    input.setAttribute('name', 'server');
+                    input.setAttribute('id', server.id);
+                    input.setAttribute('value', server.ip);
+
+                    td.appendChild(input);
+                    tr.appendChild(td);
+
+                    $('#tbody')[0].appendChild(tr);
+                }
+            }
+        })
+    })
+</script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="configServersLabel">配置服务器</h4>
+</div>
+<div class="modal-body" id="serverCheckbox">
+    <table class="table table-condensed" id="table">
+        <tbody id="tbody">
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <!--TODO 全选和全不选,做到一个按钮里去-->
+    <button type="button" class="btn btn-primary" onclick="commit()">确定</button>
+</div>

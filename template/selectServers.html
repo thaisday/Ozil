@@ -1,0 +1,96 @@
+<script type="application/javascript">
+
+    //保存服务器列表
+    function save() {
+
+        var data = {
+            //servers的类型必须是一个array
+            //形参server则是servers中遍历的每个变量
+            //map返回的是一个array
+            servers: $("input[name='server']").toArray().map(function (server) {
+                return {
+                    id: server.id,
+                    ip: server.value,
+                    monitorStatus: server.checked ? 'Y' : 'N',
+                    status: '1'
+                };
+            })
+        };
+
+        var saveSelectServers = $.ajax({
+            url: 'servers',
+            type: 'post',
+            async: 'false',
+            //传过去的value是一个序列化的文本
+            data: {data : JSON.stringify(data)}
+        });
+    }
+
+
+    //全选和全不选
+    function select(flag, name) {
+        var checkboxNames = document.getElementsByName(name);
+        for (var i in checkboxNames) {
+            checkboxNames[i].checked = flag;
+        }
+    }
+
+
+    //当页面加载完成之后
+    //再执行请求去生成页面里面的东西
+    //展示服务器选择的多选框
+    $(document).ready(function () {
+        var servers = $.ajax({
+            url: 'servers',
+            type: 'get',
+            async: 'false',
+            success: function (data) {
+                //保存成全局变量,等修改之后,用全局变量提交
+                serversData = data;
+                for (i in data.servers) {
+                    var server = data.servers[i];
+                    //创建一个label
+                    var label = document.createElement("label");
+
+                    //创建一个input加载到label里面去
+                    var input = document.createElement("input");
+                    input.setAttribute("type", "checkbox");
+                    input.setAttribute("name", "server");
+                    input.setAttribute("id", server.id);
+
+                    label.setAttribute("id", "label" + i);
+                    if (server.monitorStatus == 'Y') {
+                        input.setAttribute("checked", "1");
+                    }
+                    input.setAttribute("value", server.ip);
+
+                    label.appendChild(input);
+                    $('#checkboxField')[0].appendChild(label);
+                    //首先页面上有label这个元素,才能找到并append进去
+                    $("#label" + i).append(server.ip);
+                }
+
+
+            }
+        });
+    });
+
+</script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="selectServersLabel">选择服务器</h4>
+</div>
+<div class="modal-body" id="serverCheckbox">
+    <form>
+        <div class="checkbox" id="checkboxField">
+
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <!--TODO 全选和全不选,做到一个按钮里去-->
+    <button type="button" class="btn btn-default" onclick="select(0,'server')">全不选</button>
+    <button type="button" class="btn btn-primary" onclick="select(1,'server')">全选</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="save()">保存</button>
+</div>
