@@ -1,5 +1,32 @@
 <script type="application/javascript">
 
+
+        //保存服务器列表
+    function save() {
+
+        var data = {
+            //servers的类型必须是一个array
+            //形参server则是servers中遍历的每个变量
+            //map返回的是一个array
+            servers: $("input[name='server']").toArray().map(function (server) {
+                return {
+                    id: server.id,
+                    ip: server.value,
+                    monitorStatus: server.checked ? 'Y' : 'N',
+                    status: '1'
+                };
+            })
+        };
+
+        var saveSelectServers = $.ajax({
+            url: 'servers',
+            type: 'post',
+            async: 'false',
+            //传过去的value是一个序列化的文本
+            data: {data : JSON.stringify(data)}
+        });
+    }
+
     //页面加载显示现有的服务器选项111
     $(document).ready(function () {
         var servers = $.ajax({
@@ -40,5 +67,5 @@
 </div>
 <div class="modal-footer">
     <!--TODO 全选和全不选,做到一个按钮里去-->
-    <button type="button" class="btn btn-primary" onclick="commit()">确定</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="save()">确定</button>
 </div>
